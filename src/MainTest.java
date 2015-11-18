@@ -22,21 +22,6 @@ public class MainTest {
     }
 
     @Test
-    public void testSearchClosestJump() throws Exception {
-//        Main.closestJump(1, )
-    }
-
-    @Test
-    public void testRecursionLeft() throws Exception {
-
-    }
-
-    @Test
-    public void testRecursionRight() throws Exception {
-
-    }
-
-    @Test
     public void testContainsExcluded() throws Exception {
         int [] excluded = {2};
         boolean containsExcluded = Main.containsExcluded(42, excluded);
