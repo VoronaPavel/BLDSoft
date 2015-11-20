@@ -1,38 +1,33 @@
 object MainScala extends App {
 
-  def steps(from : Long = 100, to: Long, excludedDigits : Array[Int]) : Long = {
+  def steps(from : Long = 100, to: Long, digits : Array[Int]) : Long = {
     def closestJump: Long = {
 
-      def jumpLeft(point: Long = to - 1, distance : Long = 1) : (Long, Long) =
-        if (! containsExcluded(point)) (point, distance)
-        else jumpLeft(point - 1, distance + 1)
+      def jump(move : (Long => Long), point: Long = to, distance : Long = 1) : (Long, Long) =
+        if (! containsDigits(point)) (point, distance)
+        else jump(move, move(point), distance + 1)
 
-      def jumpRight(point: Long = to + 1, distance : Long = 1) : (Long, Long) =
-        if (! containsExcluded(point)) (point, distance)
-        else jumpRight(point + 1, distance + 1)
-
-      if (! containsExcluded(to))
+      if (! containsDigits(to))
         to
       else {
-        val (leftPoint, leftDistance) = jumpLeft(to - 1)
-        val (rightPoint, rightDistance) = jumpRight(to + 1)
-        if (leftDistance < rightDistance)
-          leftPoint
-        else
-          rightPoint
+        def left = (n : Long) => n - 1
+        def right = (n : Long) => n + 1
+        val (leftPoint, leftDistance) = jump(left)
+        val (rightPoint, rightDistance) = jump(right)
+        if (leftDistance < rightDistance) leftPoint else rightPoint
       }
     }
 
-    def containsExcluded(number: Long) =
-      excludedDigits.toStream.exists(e => number.toString.contains(e.toString))
+    def containsDigits(number: Long) =
+      digits.toStream.exists(digit => number.toString.contains(digit.toString))
 
     def distance(from : Long, to : Long) =
       if (from > to) from - to else to - from
 
-    if (1 + distance(closestJump, to) > distance(to, from))
-      distance(to, from)
-    else
-      1 + distance(closestJump, to)
+    val stepsWithJump = 1 + distance(closestJump, to)
+    val stepsByStep = distance(to, from)
+
+    if (stepsWithJump > stepsByStep) stepsByStep else stepsWithJump
   }
 
   val excluded1: Array[Int] = Array(1)
