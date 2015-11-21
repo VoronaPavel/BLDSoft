@@ -1,19 +1,20 @@
 object MainScala extends App {
 
   def steps(from : Long = 100, to : Long, digits : Array[Int]) : Long = {
+
     def closestJump: Long = {
 
-      def jump(move : (Long => Long), point: Long = to, distance : Long = 1) : (Long, Long) =
+      def search(move : (Long => Long), point: Long = to, distance : Long = 1) : (Long, Long) =
         if (!containsDigits(point)) (point, distance)
-        else jump(move, move(point), distance + 1)
+        else search(move, move(point), distance + 1)
 
       if (!containsDigits(to))
         to
       else {
         def left = (n : Long) => n - 1
         def right = (n : Long) => n + 1
-        val (leftPoint, leftDistance) = jump(left)
-        val (rightPoint, rightDistance) = jump(right)
+        val (leftPoint, leftDistance) = search(left)
+        val (rightPoint, rightDistance) = search(right)
         if (leftDistance < rightDistance) leftPoint else rightPoint
       }
     }
